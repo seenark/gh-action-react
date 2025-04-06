@@ -16,7 +16,7 @@ jobs:
         run: bun run lint
   deploy:
     needs:
-      - test
+      - lint
     runs-on: ubuntu-latest
     steps:
       - name: Get Code
