@@ -1,9 +1,9 @@
 name: Deploy Project
 on:
-  pull_request:
-    types:
-      - opened
   workflow_dispatch:
+  push:
+    branches:
+      - main
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -18,7 +18,7 @@ jobs:
         run: bun i
       - name: Run ESLint
         run: bun run lint
-  deploy:
+  build:
     needs:
       - lint
     runs-on: ubuntu-latest
@@ -33,5 +33,19 @@ jobs:
         run: bun i
       - name: Build Project
         run: bun run build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-files # any name you like
+          path: |
+            dist
+            public
+            package.json
+
+  deploy:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy
         run: echo "Deploying..."
