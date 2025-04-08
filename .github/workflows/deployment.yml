@@ -4,12 +4,19 @@ on:
   push:
     branches:
       - main
+env:
+  POSTGRES_URL: postgres://postgres:postgres@localhost:5432/postgres
+  PORT: 3000
 jobs:
   lint:
+    env:
+      POSTGRES_URL: postgres://postgres:postgres@localhost:5432/postgres
     runs-on: ubuntu-latest
     steps:
       - name: Get Code
         uses: actions/checkout@v4
+      - name: Echo PORT from ENV
+        run: echo "PORT:$PORT"
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
