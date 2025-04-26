@@ -1,26 +1,14 @@
-name: Deploy Project
+name: Website Deployment
 on:
-  workflow_dispatch:
   push:
     branches:
-      - temp
-env:
-  POSTGRES_URL: postgres://postgres:postgres@localhost:5432/postgres
-  PORT: 3000
-  AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+      - main
 jobs:
   lint:
-    environment: testing
-    env:
-      POSTGRES_URL: postgres://postgres:postgres@localhost:5432/postgres
     runs-on: ubuntu-latest
     steps:
       - name: Get Code
         uses: actions/checkout@v4
-      - name: Echo PORT from ENV
-        run: echo "PORT:$PORT"
-      - name: Echo AUTH_TOKEN from ENV <- secrets.AUTH_TOKEN
-        run: echo "PORT:$AUTH_TOKEN"
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
@@ -33,7 +21,33 @@ jobs:
       - name: Install Dependencies
         run: bun i
       - name: Run ESLint
+        id: run-lint
         run: bun run lint
+      - name: Echo if lint ok
+        if: steps.run-lint.outcome == 'success'
+        run: echo "Lint was successful"
+      - name: Echo if lint failed
+        if: steps.run-lint.outcome == 'failure'
+        run: echo "Lint failed"
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v4
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.2.8
+      - name: Install Dependencies
+        run: bun i
+      - name: Test code
+        run: bun test
+
   build:
     needs:
       - lint
