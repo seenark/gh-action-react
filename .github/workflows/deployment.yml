@@ -7,6 +7,7 @@ on:
 env:
   POSTGRES_URL: postgres://postgres:postgres@localhost:5432/postgres
   PORT: 3000
+  AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
 jobs:
   lint:
     env:
@@ -17,6 +18,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Echo PORT from ENV
         run: echo "PORT:$PORT"
+      - name: Echo AUTH_TOKEN from ENV <- secrets.AUTH_TOKEN
+        run: echo "PORT:$AUTH_TOKEN"
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
