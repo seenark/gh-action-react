@@ -23,12 +23,11 @@ jobs:
       - name: Run ESLint
         id: run-lint
         run: bun run lint
-      - name: Echo if lint ok
-        if: steps.run-lint.outcome == 'success'
-        run: echo "Lint was successful"
       - name: Echo if lint failed
-        if: steps.run-lint.outcome == 'failure'
+        if: ${{ failure() && steps.run-lint.outcome == 'failure' }}
         run: echo "Lint failed"
+      - name: Echo if lint ok
+        run: echo "Lint was successful"
   test:
     runs-on: ubuntu-latest
     steps:
