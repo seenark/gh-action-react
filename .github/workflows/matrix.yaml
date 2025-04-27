@@ -2,13 +2,21 @@ name: Matrix Build
 on:
   push:
     branches:
-      - main
+      - temp
 jobs:
   build:
+    continue-on-error: true
     strategy:
       matrix:
         bun-version: [1.2.8, 1.2.10]
         os: [ubuntu-latest, macos-latest]
+        include:
+          - bun-version: 1.0.0
+            os: ubuntu-latest
+        exclude:
+          - bun-version: 1.2.10
+            os: macos-latest
+
     runs-on: ${{ matrix.os }}
     outputs:
       script-file: ${{ steps.find-js.outputs.script-file }}

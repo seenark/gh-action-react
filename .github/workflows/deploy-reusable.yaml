@@ -1,0 +1,10 @@
+name: Website Deployment
+on: workflow_call
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output contents
+        run: ls
+      - name: Deploy
+        run: echo "Deploying..."
