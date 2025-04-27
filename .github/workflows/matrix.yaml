@@ -33,7 +33,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dist-files # any name you like
+          name: dist-files-${{ matrix.os }}-${{ matrix.bun-version }}
           path: |
             dist
             public
