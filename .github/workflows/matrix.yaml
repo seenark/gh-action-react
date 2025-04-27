@@ -1,0 +1,40 @@
+name: Matrix Build
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    strategy:
+      matrix:
+        bun-version: [1.2.8, 1.2.10]
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    outputs:
+      script-file: ${{ steps.find-js.outputs.script-file }}
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ matrix.bun-version }}
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+      - name: Install Dependencies
+        if: ${{ steps.cache-node-modules.outputs.cache-hit != 'true' }}
+        run: bun i
+      - name: Build Project
+        run: bun run build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-files # any name you like
+          path: |
+            dist
+            public
+            package.json
