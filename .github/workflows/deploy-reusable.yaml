@@ -6,7 +6,7 @@ on:
         type: string # number, boolean, string
         description: "Name of the artifact to download"
         required: false
-        default: "dist-files"
+        default: "dist"
 
 jobs:
   deploy:
