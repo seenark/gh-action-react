@@ -99,3 +99,5 @@ jobs:
     uses: ./.github/workflows/deploy-reusable.yaml
     with:
       artifact-name: dist-files
+    # secrets:
+    #   some-secret: ${{ secrets.SOME_SECRET }}
